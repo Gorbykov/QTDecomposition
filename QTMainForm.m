@@ -83,7 +83,10 @@ function openButton_Callback(hObject, eventdata, handles)
 '*.*','All Files' },'Open Image');
 global img
 img = imread(fullfile(PathName, FileName));
-img = im2double(rgb2gray(img));
+if(ndims(img)==3)
+    img = rgb2gray(img);
+end
+img = im2double(img);
 newN = 2^(nextpow2(min(size(img)))-1);
 img = imcrop(img,[0 0 min(size(img)) min(size(img))]);
 img = imresize(img, [newN newN]); 
