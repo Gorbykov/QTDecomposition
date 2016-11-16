@@ -5,7 +5,7 @@ function QtMain(img, depth, threshold)
 %   threshold - like in qtdecomp
 
 root = QTree([int32(1) int32(1)],int32(size(img)));
-if (depth == 0) || (depth > log2(size(img)))
+if (depth == 0) || (depth > log2(size(img,1)))
     depth = log2(size(img));
 end
    root.split();
@@ -17,7 +17,7 @@ end
 end
 
 function img = drawReg(img, root)
-    if root.isLeaf
+    if (isemty(root)) || (root.isLeaf) 
         img(root.pos(1):(root.pos(1)+root.size(1)),root.pos(2):(root.pos(2)+root.size(1))) = root.mean;
         return
     else
@@ -43,7 +43,7 @@ function goDepth(img, root, depth, threshold )
         root.child{i}.delta = abs(min(cropImg(:)) - max(cropImg(:)));
         root.child{i}.mean = mean(cropImg(:));
         root.child{i}.split();
-        if (root.child{i}.delta <= threshold) || (root.child{i}.isLeaf)
+        if (root.child{i}.delta <= threshold) || (root.child{i}.isLeaf) || (depth == 0)
             root.child{i}.isLeaf = true;
             return
         else
